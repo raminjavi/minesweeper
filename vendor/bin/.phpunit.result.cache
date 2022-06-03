@@ -1,0 +1,1 @@
+C:37:"PHPUnit\Runner\DefaultTestResultCache":328:{a:2:{s:7:"defects";a:4:{s:26:"SayHelloTest::testSayHello";i:3;s:18:"PlayTest::testPlay";i:4;s:23:"PlayTest::testException";i:3;s:19:"BoardTest::testPlay";i:4;}s:5:"times";a:4:{s:26:"SayHelloTest::testSayHello";d:0.004;s:18:"PlayTest::testPlay";d:0.008;s:23:"PlayTest::testException";d:0.007;s:19:"BoardTest::testPlay";d:0.008;}}}
