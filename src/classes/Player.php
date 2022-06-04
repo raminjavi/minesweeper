@@ -18,4 +18,16 @@ class Player
     {
         return $this->totalScores;
     }
+
+    public function play(Board $board, Position $position): Cell
+    {
+        $cell = $board->getCell($position);
+
+        if ($cell->isMarked()) {
+            throw new \Exception("The cell already marked by another player");
+        }
+
+        $cell->setPlayer($this);
+        return $cell;
+    }
 }

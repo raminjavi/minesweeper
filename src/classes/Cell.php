@@ -44,4 +44,9 @@ _____________________________________________*/
         $this->isMarked = true;
         return $this->player = $player;
     }
+
+    public function setMine(Mine $mine): Mine
+    {
+        return $this->mine = $mine;
+    }
 }
