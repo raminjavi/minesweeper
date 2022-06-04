@@ -14,6 +14,12 @@ class Player
         $this->fullName = $fullName;
     }
 
+    public function addToScores(int $scores): int
+    {
+        $this->totalScores = $this->totalScores + $scores;
+        return $this->totalScores;
+    }
+
     public function getTotalScores(): int
     {
         return $this->totalScores;
@@ -27,7 +33,13 @@ class Player
             throw new \Exception("The cell already marked by another player");
         }
 
-        $cell->setPlayer($this);
+        $result = $cell->mark($this);
+        if ($result instanceof Mine) {
+            echo ("Mine Found\n\r");
+        } else {
+            echo "No mines\n\r";
+        }
+
         return $cell;
     }
 }

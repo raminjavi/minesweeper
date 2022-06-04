@@ -3,10 +3,7 @@
     "description": "a simple game",
     "type": "project",
     "require": {
-        "php": ">=7.4.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "9"
+        "php": "^7.3|^8.0"
     },
     "autoload": {
         "files": [
@@ -22,5 +19,8 @@
             "email": "ramin.javvi@gmail.com"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "9.5.10"
+    }
 }

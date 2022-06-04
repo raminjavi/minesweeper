@@ -14,6 +14,18 @@ class Cell
     private bool $isMarked = false;
     private int $totalMinesAround = 0;
 
+    public function mark(Player $player): Mine|int
+    {
+        $this->isMarked = true;
+        $this->player = $player;
+
+        if ($mine = $this->getMine()) {
+            $player->addToScores(1);
+            return $mine;
+        }
+        return 2;
+    }
+
     public function isMarked(): bool
     {
         return $this->isMarked;
@@ -35,15 +47,6 @@ class Cell
     }
 
 
-
-    /*  SETTERS
-_____________________________________________*/
-
-    public function setPlayer(Player $player): Player
-    {
-        $this->isMarked = true;
-        return $this->player = $player;
-    }
 
     public function setMine(Mine $mine): Mine
     {
