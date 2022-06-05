@@ -17,13 +17,5 @@ class Position
     {
         return $this->position;
     }
-
-    public function set(Board $board, int $x, int $y): array
-    {
-        $dimensions = $board->getDimensions();
-        if ($x > $dimensions['x'] || $y > $dimensions['y'])
-            throw new \Exception("Position must be in range of {$dimensions['x']}x{$dimensions['y']}");
-
-        return $this->position = ['x' => $x, 'y' => $y];
-    }
+    
 }

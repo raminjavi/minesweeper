@@ -7,7 +7,7 @@ namespace Game\classes;
 use Game\classes\Cell;
 use Game\classes\Mine;
 
-final class Board
+class Board
 {
     private int $x;
     private int $y;
@@ -71,6 +71,11 @@ final class Board
     {
         $pos = $position->get();
         $board = $this->getBoard();
+        $dimensions = $this->getDimensions();
+
+        if ($pos['x'] > $dimensions['x'] || $pos['y'] > $dimensions['y'])
+            throw new \Exception("Position must be in range of {$dimensions['x']}x{$dimensions['y']}");
+
         return $board[$pos['y']][$pos['x']];
     }
 

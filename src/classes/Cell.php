@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Game\classes;
 
-use Game\classes\Mine;
-use Game\classes\Player;
+// use Game\classes\Mine;
+// use Game\classes\Player;
 
 class Cell
 {
@@ -19,14 +19,6 @@ class Cell
     public function __construct(Position $position)
     {
         $this->position = $position;
-        // foreach ($board->getBoard() as $y => $cells) {
-        //     foreach ($cells as $x => $cell) {
-        //         if ($cell == $this) {
-        //             return new Position($board, $x, $y);
-        //         }
-        //     }
-        // }
-        // throw new \Exception("Position on the board not found!");
     }
 
     public function mark(Player $player): Mine|int
