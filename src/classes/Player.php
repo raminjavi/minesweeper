@@ -35,6 +35,7 @@ class Player
 
         $result = $cell->mark($this);
         if ($result instanceof Mine) {
+            $this->addToScores(1);
             echo ("Mine Found\n\r");
         } else {
             echo "No mines\n\r";

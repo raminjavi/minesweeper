@@ -1,1 +1,1 @@
-{"version":1,"defects":[],"times":{"BoardTest::testCompareImplantedMinesWithTotalMines":0.008,"PlayerTest::testPlay":0.001}}
+{"version":1,"defects":{"BoardTest::testCompareImplantedMinesWithTotalMines":3},"times":{"BoardTest::testCompareImplantedMinesWithTotalMines":0.008,"PlayerTest::testPlay":0.001}}

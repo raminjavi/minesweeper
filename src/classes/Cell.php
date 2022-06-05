@@ -11,8 +11,23 @@ class Cell
 {
     private Mine $mine;
     private Player $player;
+    private Position $position;
     private bool $isMarked = false;
     private int $totalMinesAround = 0;
+
+
+    public function __construct(Position $position)
+    {
+        $this->position = $position;
+        // foreach ($board->getBoard() as $y => $cells) {
+        //     foreach ($cells as $x => $cell) {
+        //         if ($cell == $this) {
+        //             return new Position($board, $x, $y);
+        //         }
+        //     }
+        // }
+        // throw new \Exception("Position on the board not found!");
+    }
 
     public function mark(Player $player): Mine|int
     {
@@ -20,9 +35,9 @@ class Cell
         $this->player = $player;
 
         if ($mine = $this->getMine()) {
-            $player->addToScores(1);
             return $mine;
         }
+        // return $this->setTotalMinesAround();
         return 2;
     }
 
@@ -46,10 +61,20 @@ class Cell
         return $this->totalMinesAround;
     }
 
+    public function getPosition(): Position
+    {
+        return $this->position;
+    }
+
 
 
     public function setMine(Mine $mine): Mine
     {
         return $this->mine = $mine;
+    }
+
+    public function setTotalMinesAround(): int
+    {
+        return $this->totalMinesAround;
     }
 }

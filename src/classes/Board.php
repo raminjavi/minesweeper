@@ -7,7 +7,7 @@ namespace Game\classes;
 use Game\classes\Cell;
 use Game\classes\Mine;
 
-class Board
+final class Board
 {
     private int $x;
     private int $y;
@@ -18,52 +18,44 @@ class Board
 
     public function __construct(array $players)
     {
-        $this->players = $players;
-        $this->setTotalScores(8);
-        $this->setTotalMines(15);
+        // TODO: what if we want to create a board with different dimensions?!
         $this->setDimensions(7, 8);
         $this->createBoard();
+
+        $this->setPlayers($players);
+        $this->setTotalScores(8);
+        $this->plantMines(15);
     }
 
     private function createBoard(): void
     {
         if (!isset($this->x) || !isset($this->y)) {
-            throw new \Exception("Initialize Board dimensions first");
-        }
-
-        if ($this->totalMines >= ($this->x * $this->y)) {
-            throw new \Exception("TotalMines must be less than Board dimensions");
+            throw new \Exception("Board dimensions has not initialized");
         }
 
         $row = [];
-        $counter = 0;
-        for ($rowIndex = 0; $rowIndex <= $this->x; $rowIndex++) {
+        for ($y = 0; $y <= $this->y; $y++) {
 
             $column = [];
-            for ($columnIndex = 0; $columnIndex <= $this->y; $columnIndex++) {
-
-                $counter++;
-                $cell = new Cell;
-
-                if ($this->totalMines >= $counter) {
-                    $mine = new Mine;
-                    $cell->setMine($mine);
-                }
-
+            for ($x = 0; $x <= $this->x; $x++) {
+                $position = new Position($x, $y);
+                $cell = new Cell($position);
                 $column[] = $cell;
             }
 
-            shuffle($column);
             $row[] = $column;
         }
 
-        shuffle($row);
         $this->board = $row;
     }
 
 
     public function getBoard(): array
     {
+        if (!isset($this->board)) {
+            throw new \Exception("Board has not created");
+        }
+
         return $this->board;
     }
 
@@ -90,8 +82,8 @@ class Board
     public function getMarkedCells(): array
     {
         $markedCells = [];
-        foreach ($this->getBoard() as $boardRow) {
-            foreach ($boardRow as $cell) {
+        foreach ($this->getBoard() as $cells) {
+            foreach ($cells as $cell) {
                 if ($cell->isMarked()) {
                     $markedCells[] = $cell;
                 }
@@ -108,20 +100,58 @@ class Board
 
     /* Setters
     __________________________________________________________*/
-    public function setTotalMines(int $totalMines): int
+
+    private function plantMines(int $totalMines): int
     {
-        return $this->totalMines = abs($totalMines - 1);
+        $this->totalMines = abs($totalMines);
+
+        // Since X and Y start from zero, we must increase them by 1
+        $x = $this->x + 1;
+        $y = $this->y + 1;
+
+        if ($this->totalMines > ($x * $y)) {
+            throw new \Exception("Mines must be less than Board cells");
+        }
+
+        $plantedMines = 0;
+        $board = $this->getBoard();
+        while ($plantedMines < $this->totalMines) {
+            if (rand(0, 100) % 2) {
+                $randomY = rand(0, $this->y);
+                $randomX = rand(0, $this->x);
+                $cell = $board[$randomY][$randomX];
+                if (!$cell->getMine()) {
+                    $mine = new Mine;
+                    $cell->setMine($mine);
+                    $plantedMines++;
+                }
+            }
+        }
+        return $plantedMines;
     }
 
-    public function setTotalScores(int $totalScores): int
+    private function setTotalScores(int $totalScores): int
     {
         return $this->totalScores = abs($totalScores - 1);
     }
 
-    public function setDimensions(int $x, int $y): array
+    private function setDimensions(int $x, int $y): array
     {
         $this->x = abs($x - 1);
         $this->y = abs($y - 1);
         return [$this->x, $this->y];
+    }
+
+    private function setPlayers(array $players): array
+    {
+        $playersArray = [];
+        foreach ($players as $player) {
+            if (!$player instanceof Player) {
+                throw new \Exception("Invalid Player type");
+            }
+            $playersArray[] = $player;
+        }
+        $this->players = $playersArray;
+        return $this->players;
     }
 }

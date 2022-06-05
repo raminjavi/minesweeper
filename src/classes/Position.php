@@ -8,9 +8,9 @@ class Position
 {
     private array $position;
 
-    public function __construct(Board $board, int $x, int $y)
+    public function __construct(int $x, int $y)
     {
-        $this->position = $this->set($board, $x, $y);
+        $this->position = ['x' => $x, 'y' => $y];
     }
 
     public function get(): array
@@ -26,5 +26,4 @@ class Position
 
         return $this->position = ['x' => $x, 'y' => $y];
     }
-    
 }
