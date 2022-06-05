@@ -71,7 +71,7 @@ final class Board
     {
         $pos = $position->get();
         $board = $this->getBoard();
-        return $board[$pos['x']][$pos['y']];
+        return $board[$pos['y']][$pos['x']];
     }
 
     public function getPlayers(): array

@@ -19,9 +19,9 @@ class PlayerTest extends TestCase
 
         // Generate 2 random positions for players
         $dimensions = $board->getDimensions();
-        $randomPosition1 = new Position($board, rand(0, $dimensions['x']), rand(0, $dimensions['y']));
+        $randomPosition1 = new Position(rand(0, $dimensions['x']), rand(0, $dimensions['y']));
         while (!isset($randomPosition2)) {
-            $pos = new Position($board, rand(0, $dimensions['x']), rand(0, $dimensions['y']));
+            $pos = new Position(rand(0, $dimensions['x']), rand(0, $dimensions['y']));
             if ($randomPosition1->get() != $pos->get()) {
                 $randomPosition2 = $pos;
                 break;
