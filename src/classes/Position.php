@@ -10,6 +10,9 @@ class Position
 
     public function __construct(int $x, int $y)
     {
+        if ($x < 0 || $y < 0)
+            throw new \Exception("Position must contain natural integers");
+
         $this->position = ['x' => $x, 'y' => $y];
     }
 
@@ -17,5 +20,4 @@ class Position
     {
         return $this->position;
     }
-    
 }

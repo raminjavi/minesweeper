@@ -12,17 +12,16 @@ class Board
     private int $x;
     private int $y;
     private array $board;
-    private array $players;
     private int $totalMines;
     private int $totalScores;
 
-    public function __construct(array $players)
+
+    public function __construct()
     {
         // TODO: what if we want to create a board with different dimensions?!
         $this->setDimensions(7, 8);
         $this->createBoard();
 
-        $this->setPlayers($players);
         $this->setTotalScores(8);
         $this->plantMines(15);
     }
@@ -52,9 +51,8 @@ class Board
 
     public function getBoard(): array
     {
-        if (!isset($this->board)) {
+        if (!isset($this->board))
             throw new \Exception("Board has not created");
-        }
 
         return $this->board;
     }
@@ -79,10 +77,6 @@ class Board
         return $board[$pos['y']][$pos['x']];
     }
 
-    public function getPlayers(): array
-    {
-        return $this->players;
-    }
 
     public function getMarkedCells(): array
     {
@@ -100,6 +94,11 @@ class Board
     public function getTotalMines(): int
     {
         return $this->totalMines;
+    }
+
+    public function getTotalScores(): int
+    {
+        return $this->totalScores;
     }
 
 
@@ -147,16 +146,24 @@ class Board
         return [$this->x, $this->y];
     }
 
-    private function setPlayers(array $players): array
-    {
-        $playersArray = [];
-        foreach ($players as $player) {
-            if (!$player instanceof Player) {
-                throw new \Exception("Invalid Player type");
-            }
-            $playersArray[] = $player;
-        }
-        $this->players = $playersArray;
-        return $this->players;
-    }
+
+    // private array $players;
+    // public function __construct(array $players)
+    // $this->setPlayers($players);
+    // public function getPlayers(): array
+    // {
+    //     return $this->players;
+    // }
+    // private function setPlayers(array $players): array
+    // {
+    //     $playersArray = [];
+    //     foreach ($players as $player) {
+    //         if (!$player instanceof Player) {
+    //             throw new \Exception("Invalid Player type");
+    //         }
+    //         $playersArray[] = $player;
+    //     }
+    //     $this->players = $playersArray;
+    //     return $this->players;
+    // }
 }

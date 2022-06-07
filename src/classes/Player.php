@@ -14,33 +14,26 @@ class Player
         $this->fullName = $fullName;
     }
 
-    public function addToScores(int $scores): int
+    public function play(Board $board, Position $position): Cell
     {
-        $this->totalScores = $this->totalScores + $scores;
-        return $this->totalScores;
+        $cell = $board->getCell($position);
+
+        if ($cell->isMarked())
+            throw new \Exception("The cell already marked by another player");
+
+        // Scan mines around the cell
+        $cell->calculateMinesAround($board);
+
+        return $cell->mark($this);
+    }
+
+    public function addScore(int $scores): int
+    {
+        return $this->totalScores = $this->totalScores + $scores;
     }
 
     public function getTotalScores(): int
     {
         return $this->totalScores;
-    }
-
-    public function play(Board $board, Position $position): Cell
-    {
-        $cell = $board->getCell($position);
-
-        if ($cell->isMarked()) {
-            throw new \Exception("The cell already marked by another player");
-        }
-
-        $result = $cell->mark($this);
-        if ($result instanceof Mine) {
-            $this->addToScores(1);
-            echo ("Mine Found\n\r");
-        } else {
-            echo "No mines\n\r";
-        }
-
-        return $cell;
     }
 }

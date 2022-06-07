@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace Game\classes;
 
-// use Game\classes\Mine;
-// use Game\classes\Player;
-
 class Cell
 {
     private Mine $mine;
     private Player $player;
     private Position $position;
-    private bool $isMarked = false;
     private int $totalMinesAround = 0;
+    private bool $isMarked = false;
 
 
     public function __construct(Position $position)
@@ -21,16 +18,11 @@ class Cell
         $this->position = $position;
     }
 
-    public function mark(Player $player): Mine|int
+    public function mark(Player $player): Cell
     {
         $this->isMarked = true;
         $this->player = $player;
-
-        if ($mine = $this->getMine()) {
-            return $mine;
-        }
-        // return $this->setTotalMinesAround();
-        return 2;
+        return $this;
     }
 
     public function isMarked(): bool
@@ -48,10 +40,57 @@ class Cell
         return $this->mine ?? null;
     }
 
+    public function calculateMinesAround(Board $board): void
+    {
+        $cellPosition = $this->getPosition();
+        $pointerPosition = $cellPosition->get();
+        $clockwisePattern = [
+            ['y', '-'],
+            ['x', '+'],
+            ['y', '+'],
+            ['y', '+'],
+            ['x', '-'],
+            ['x', '-'],
+            ['y', '-'],
+            ['y', '-'],
+        ];
+
+        // Scan around the cell (clockwise)
+        foreach ($clockwisePattern as $item) {
+            $axis = $item[0];
+            $operator = $item[1];
+
+            if ($operator == '+') {
+                if ($axis == 'y') {
+                    $pointerPosition['y']++;
+                } else {
+                    $pointerPosition['x']++;
+                }
+            } else {
+                if ($axis == 'y') {
+                    $pointerPosition['y']--;
+                } else {
+                    $pointerPosition['x']--;
+                }
+            }
+
+            try {
+                $adjacentCellPosition = new Position($pointerPosition['x'], $pointerPosition['y']);
+                if ($adjacentCell = $board->getCell($adjacentCellPosition)) {
+                    if ($adjacentCell->getMine()) {
+                        $this->totalMinesAround++;
+                    }
+                }
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
     public function getTotalMinesAround(): int
     {
         return $this->totalMinesAround;
     }
+
 
     public function getPosition(): Position
     {
@@ -59,14 +98,8 @@ class Cell
     }
 
 
-
     public function setMine(Mine $mine): Mine
     {
         return $this->mine = $mine;
-    }
-
-    public function setTotalMinesAround(): int
-    {
-        return $this->totalMinesAround;
     }
 }
