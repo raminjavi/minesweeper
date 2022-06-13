@@ -14,9 +14,9 @@ class PositionTest extends TestCase
 
     public function testGetPosition()
     {
-        $board = new Board([new Player("Bot One")]);
-        $dimensions = $board->getDimensions();
-        $position = new Position(rand(0, $dimensions['x']), rand(0, $dimensions['y']));
-        $this->assertIsArray($position->get());
+        $board = new Board(7, 8);
+        $boardDimensions = $board->getDimensions();
+        $position = new Position(rand(0, $boardDimensions->x), rand(0, $boardDimensions->y));
+        $this->assertIsObject($position->get());
     }
 }

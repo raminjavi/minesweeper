@@ -50,7 +50,7 @@ class Cell
         return $this->mine ?? null;
     }
 
-    public function calculateMinesAround(Board $board): void
+    public function getMinesAround(Board $board): int
     {
         $cellPosition = $this->getPosition();
         $pointerPosition = $cellPosition->get();
@@ -62,20 +62,20 @@ class Cell
 
             if ($operator == '+') {
                 if ($axis == 'y') {
-                    $pointerPosition['y']++;
+                    $pointerPosition->y++;
                 } else {
-                    $pointerPosition['x']++;
+                    $pointerPosition->x++;
                 }
             } else {
                 if ($axis == 'y') {
-                    $pointerPosition['y']--;
+                    $pointerPosition->y--;
                 } else {
-                    $pointerPosition['x']--;
+                    $pointerPosition->x--;
                 }
             }
 
             try {
-                $adjacentCellPosition = new Position($pointerPosition['x'], $pointerPosition['y']);
+                $adjacentCellPosition = new Position($pointerPosition->x, $pointerPosition->y);
                 if ($adjacentCell = $board->getCell($adjacentCellPosition)) {
                     if ($adjacentCell->getMine()) {
                         $this->totalMinesAround++;
@@ -84,6 +84,8 @@ class Cell
             } catch (\Exception $e) {
             }
         }
+
+        return $this->totalMinesAround;
     }
 
     public function getTotalMinesAround(): int

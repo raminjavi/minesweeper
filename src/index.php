@@ -4,52 +4,48 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Game\classes\Board;
-use Game\classes\GameState;
+use Game\classes\Game;
 use Game\classes\Player;
 use Game\classes\Position;
 
-try {
+$board = new Board(7, 8);
+$player1 = new Player("Bot one");
+$player2 = new Player("Bot two");
+$game = new Game($board, [$player1, $player2], 15, 8);
 
-    $position = new Position(1, 1);
 
-    exit;
+// Define witch Player must start the game
+$player = "player1";
 
-    $board = new Board();
-    $player1 = new Player("Bot one");
-    $player2 = new Player("Bot two");
+$boardDimensions = $board->getDimensions();
 
-    $boardDimensions = $board->getDimensions();
-    $gameState = new GameState($board, [$player1, $player2]);
 
-    // Define witch Player must start the game
-    $player = "player1";
+// $position = new Position(rand(0, $boardDimensions->x), rand(0, $boardDimensions->y));
+// $p = $player1->play($game, $position);
 
-    $playedCells = [];
-    while (!$gameState->isGameOver()) {
+// var_dump($p);
+// exit;
 
-        $position = new Position(rand(0, $boardDimensions['x']), rand(0, $boardDimensions['y']));
-        if (!$gameState->isPositionPlayable($position)) {
-            continue;
-        }
+$loopLimit = 1000;
+while (!$game->isGameOver() && $loopLimit > 0) {
+
+    try {
+        // Generate a random position
+        $position = new Position(rand(0, $boardDimensions->x), rand(0, $boardDimensions->y));
 
         // Play with selected Player
-        $cell = $$player->play($board, $position);
-
-        // Save played Cell
-        $playedCells[] = $cell;
-
-        // If the Player found a mine, then give him a score
-        if ($cell->getMine()) {
-            $gameState->addScoreToPlayer($$player);
-        } else {
-            // Switch Player's turn
-            $player = $player == "player1" ? "player2" : "player1";
-        }
+        $result = $$player->play($game, $position);
+    } catch (\Exception $e) {
+        continue;
+    } finally {
+        $loopLimit--;
     }
 
-    var_dump($gameState->getWiner());
-
-    var_dump($playedCells);
-} catch (\Exception $e) {
-    die('Message: ' . $e->getMessage());
+    // Switch Player's turn if the Player found a mine
+    if (is_numeric($result)) {
+        $player = $player == "player1" ? "player2" : "player1";
+    }
 }
+
+
+var_dump($game->getResult());

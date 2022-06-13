@@ -6,8 +6,9 @@ namespace Game\classes;
 
 class Player
 {
-    private $fullName;
-    private $scores = 0;
+    private int $scores = 0;
+    private string $fullName;
+    private bool $isWinner = false;
 
 
     public function __construct(string $fullName)
@@ -18,23 +19,35 @@ class Player
 
     /**
      * Calculate mines around the cell and mark the cell as played.
-     * @abstract
-     * @param Board $board
+     * @param Game $game
      * @param Position $position
      * @return Cell
-     * @throws LogicException if the cell was already played
+     * @throws LogicException if the cell was already marked as played
      */
-    public function play(Board $board, Position $position): Cell
+    public function play(Game $game, Position $position): int|Mine
     {
-        $cell = $board->getCell($position);
+        $board = $game->getBoard();
+
+        try {
+            $cell = $board->getCell($position);
+        } catch (\OutOfRangeException $e) {
+            die("Cannot get the cell: " . $e->getMessage());
+        }
 
         if ($cell->isMarked())
             throw new \LogicException("Cell already marked by another player");
 
-        // Scan mines around the cell
-        $cell->calculateMinesAround($board);
 
-        return $cell->mark($this);
+        // Mark the cell
+        $cell->mark($this);
+
+        // If Player found a mine, then give him a score
+        if ($mine = $cell->getMine()) {
+            $game->addScoreToPlayer($this);
+            return $mine;
+        }
+
+        return $cell->getMinesAround($board);
     }
 
 
@@ -53,5 +66,15 @@ class Player
     public function getFullName(): string
     {
         return $this->fullName;;
+    }
+
+    public function isWinner(): bool
+    {
+        return $this->isWinner;
+    }
+
+    public function win(): void
+    {
+        $this->isWinner = true;
     }
 }

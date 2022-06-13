@@ -7,44 +7,47 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Game\classes\Board;
 use Game\classes\Player;
 use Game\classes\Position;
-use Game\classes\GameState;
+use Game\classes\Game;
 use PHPUnit\Framework\TestCase;
 
 class PlayerTest extends TestCase
 {
     public function testPlay(): void
     {
-        $board = new Board();
+        
+        $board = new Board(7, 8);
         $player1 = new Player("Bot one");
         $player2 = new Player("Bot two");
+        $game = new Game($board, [$player1, $player2], 15, 8);
 
+        // Get Board dimensions
         $boardDimensions = $board->getDimensions();
-        $gameState = new GameState($board, [$player1, $player2]);
 
         // Define witch Player must start the game
         $player = "player1";
 
-        while (!$gameState->isGameOver()) {
+        // It's always a good idea to define a limitation for while loop
+        $loopLimit = 1000;
+        while (!$game->isGameOver() && $loopLimit > 0) {
 
             try {
                 // Generate a random position
-                $position = new Position(rand(0, $boardDimensions['x']), rand(0, $boardDimensions['y']));
+                $position = new Position(rand(0, $boardDimensions->x), rand(0, $boardDimensions->y));
 
                 // Play with selected Player
-                $cell = $$player->play($board, $position);
+                $playResult = $$player->play($game, $position);
             } catch (\Exception $e) {
                 continue;
+            } finally {
+                $loopLimit--;
             }
 
-            // If the Player found a mine, then give him a score
-            if ($cell->getMine()) {
-                $gameState->addScoreToPlayer($$player);
-            } else {
-                // Switch Player's turn
+            // Switch Player's turn if the Player could not find a mine
+            if (is_numeric($playResult)) {
                 $player = $player == "player1" ? "player2" : "player1";
             }
         }
 
-        $this->assertInstanceOf("Game\classes\Player", $gameState->getWiner());
+        $this->assertInstanceOf("Game\classes\Player", $game->getWinner());
     }
 }

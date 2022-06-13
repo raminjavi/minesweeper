@@ -4,36 +4,39 @@ declare(strict_types=1);
 
 namespace Game\classes;
 
-use Game\classes\Cell;
-use Game\classes\Mine;
-
 class Board
 {
     private int $x;
     private int $y;
-    private array $board;
-    private int $totalMines;
-    private int $totalScores;
+    private array $cells;
 
 
-    public function __construct()
+    /**
+     * @param array<int> $dimensions [x, y]
+     * @return void
+     */
+    public function __construct(int $x, int $y)
     {
-        // TODO: what if we want to create a board with different dimensions?!
-        $this->setDimensions(7, 8);
-        $this->createBoard();
-
-        // Setup Game
-        $this->setTotalScores(8);
-        $this->plantMines(15);
+        try {
+            $this->setDimensions($x, $y);
+            $this->createCells();
+        } catch (\InvalidArgumentException $e) {
+            die("Cannot make Board object: " . $e->getMessage());
+        }
     }
 
-    private function createBoard(): void
-    {
-        if (!isset($this->x) || !isset($this->y)) {
-            throw new \Exception("Board dimensions has not initialized");
-        }
 
-        $row = [];
+    /**
+     * Create the board
+     * @return void
+     * @throws LogicException if the board dimensions have not been initialized
+     */
+    private function createCells(): void
+    {
+        if (!isset($this->x) || !isset($this->y))
+            throw new \LogicException("Board dimensions have not been initialized");
+
+        $rows = [];
         for ($y = 0; $y <= $this->y; $y++) {
 
             $column = [];
@@ -43,128 +46,89 @@ class Board
                 $column[] = $cell;
             }
 
-            $row[] = $column;
+            $rows[] = $column;
         }
 
-        $this->board = $row;
+        $this->cells = $rows;
     }
 
 
-    public function getBoard(): array
+    /**
+     * @return array
+     * @throws LogicException if Board has not been setup
+     */
+    public function getCells(): array
     {
-        if (!isset($this->board))
-            throw new \Exception("Board has not created");
+        if (!isset($this->cells))
+            throw new \LogicException("Board has not been setup yet");
 
-        return $this->board;
+        return $this->cells;
     }
 
-    public function getDimensions(): array
+
+    /**
+     * @return object
+     */
+    public function getDimensions(): object
     {
-        return [
+        return (object) [
             'x' => $this->x,
             'y' => $this->y
         ];
     }
 
+
+    /**
+     * @param Position $position
+     * @return Cell
+     * @throws OutOfRangeException if Position was not in the board range
+     */
     public function getCell(Position $position): Cell
     {
         $pos = $position->get();
-        $board = $this->getBoard();
         $dimensions = $this->getDimensions();
 
-        if ($pos['x'] > $dimensions['x'] || $pos['y'] > $dimensions['y'])
-            throw new \Exception("Position must be in range of {$dimensions['x']}x{$dimensions['y']}");
+        if ($pos->x > $dimensions->x || $pos->y > $dimensions->y)
+            throw new \OutOfRangeException("Position must be in the range of ({$dimensions->x}, {$dimensions->y})");
 
-        return $board[$pos['y']][$pos['x']];
+        return $this->cells[$pos->y][$pos->x];
     }
 
 
-    public function getMarkedCells(): array
+
+    /**
+     * @param array $dimensions
+     * @return void
+     * @throws InvalidArgumentException if dimensions were not natural integers
+     */
+    private function setDimensions(int $x, int $y): void
     {
-        $markedCells = [];
-        foreach ($this->getBoard() as $cells) {
-            foreach ($cells as $cell) {
-                if ($cell->isMarked()) {
-                    $markedCells[] = $cell;
-                }
-            }
-        }
-        return $markedCells;
-    }
+        // if (count($dimensions) != 2) {
+        //     throw new \InvalidArgumentException("The parameter 'dimensions' only accept two values, X and Y");
+        // }
 
-    public function getTotalMines(): int
-    {
-        return $this->totalMines;
-    }
+        // $x = intval($dimensions[0]);
+        // $y = intval($dimensions[1]);
 
-    public function getTotalScores(): int
-    {
-        return $this->totalScores;
+        if ($x < 0 || $y < 0)
+            throw new \InvalidArgumentException("setDimensions method only accepts natrual integers. input was: ({$x}, {$y})");
+
+        // Decrease inputs by one because $x and $y start from zero
+        $this->x = $x - 1;
+        $this->y = $y - 1;
     }
 
 
-    /* Setters
-    __________________________________________________________*/
-
-    private function plantMines(int $totalMines): int
-    {
-        $this->totalMines = abs($totalMines);
-
-        // Since X and Y start from zero, we must increase them by 1
-        $x = $this->x + 1;
-        $y = $this->y + 1;
-
-        if ($this->totalMines > ($x * $y)) {
-            throw new \Exception("Mines must be less than Board cells");
-        }
-
-        $plantedMines = 0;
-        $board = $this->getBoard();
-        while ($plantedMines < $this->totalMines) {
-            if (rand(0, 100) % 2) {
-                $randomY = rand(0, $this->y);
-                $randomX = rand(0, $this->x);
-                $cell = $board[$randomY][$randomX];
-                if (!$cell->getMine()) {
-                    $mine = new Mine;
-                    $cell->setMine($mine);
-                    $plantedMines++;
-                }
-            }
-        }
-        return $plantedMines;
-    }
-
-    private function setTotalScores(int $totalScores): int
-    {
-        return $this->totalScores = abs($totalScores - 1);
-    }
-
-    private function setDimensions(int $x, int $y): array
-    {
-        $this->x = abs($x - 1);
-        $this->y = abs($y - 1);
-        return [$this->x, $this->y];
-    }
-
-
-    // private array $players;
-    // public function __construct(array $players)
-    // $this->setPlayers($players);
-    // public function getPlayers(): array
+    // public function getMarkedCells(): array
     // {
-    //     return $this->players;
-    // }
-    // private function setPlayers(array $players): array
-    // {
-    //     $playersArray = [];
-    //     foreach ($players as $player) {
-    //         if (!$player instanceof Player) {
-    //             throw new \Exception("Invalid Player type");
+    //     $markedCells = [];
+    //     foreach ($this->getBoard() as $cells) {
+    //         foreach ($cells as $cell) {
+    //             if ($cell->isMarked()) {
+    //                 $markedCells[] = $cell;
+    //             }
     //         }
-    //         $playersArray[] = $player;
     //     }
-    //     $this->players = $playersArray;
-    //     return $this->players;
+    //     return $markedCells;
     // }
 }

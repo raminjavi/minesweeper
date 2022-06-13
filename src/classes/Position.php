@@ -25,8 +25,8 @@ class Position
         $this->position = ['x' => $x, 'y' => $y];
     }
 
-    public function get(): array
+    public function get(): object
     {
-        return $this->position;
+        return (object)$this->position;
     }
 }
