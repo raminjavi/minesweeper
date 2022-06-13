@@ -11,6 +11,16 @@ class Cell
     private Position $position;
     private int $totalMinesAround = 0;
     private bool $isMarked = false;
+    public const CLOCKWISE_PATTERN = [
+        ['y', '-'],
+        ['x', '+'],
+        ['y', '+'],
+        ['y', '+'],
+        ['x', '-'],
+        ['x', '-'],
+        ['y', '-'],
+        ['y', '-'],
+    ];
 
 
     public function __construct(Position $position)
@@ -44,19 +54,9 @@ class Cell
     {
         $cellPosition = $this->getPosition();
         $pointerPosition = $cellPosition->get();
-        $clockwisePattern = [
-            ['y', '-'],
-            ['x', '+'],
-            ['y', '+'],
-            ['y', '+'],
-            ['x', '-'],
-            ['x', '-'],
-            ['y', '-'],
-            ['y', '-'],
-        ];
 
         // Scan around the cell (clockwise)
-        foreach ($clockwisePattern as $item) {
+        foreach (self::CLOCKWISE_PATTERN as $item) {
             $axis = $item[0];
             $operator = $item[1];
 

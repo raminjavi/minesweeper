@@ -26,13 +26,15 @@ class PlayerTest extends TestCase
 
         while (!$gameState->isGameOver()) {
 
-            $position = new Position(rand(0, $boardDimensions['x']), rand(0, $boardDimensions['y']));
-            if (!$gameState->isPositionPlayable($position)) {
+            try {
+                // Generate a random position
+                $position = new Position(rand(0, $boardDimensions['x']), rand(0, $boardDimensions['y']));
+
+                // Play with selected Player
+                $cell = $$player->play($board, $position);
+            } catch (\Exception $e) {
                 continue;
             }
-
-            // Play with selected Player
-            $cell = $$player->play($board, $position);
 
             // If the Player found a mine, then give him a score
             if ($cell->getMine()) {

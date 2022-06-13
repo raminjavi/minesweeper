@@ -10,6 +10,10 @@ use Game\classes\Position;
 
 try {
 
+    $position = new Position(1, 1);
+
+    exit;
+
     $board = new Board();
     $player1 = new Player("Bot one");
     $player2 = new Player("Bot two");

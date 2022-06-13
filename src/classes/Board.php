@@ -22,6 +22,7 @@ class Board
         $this->setDimensions(7, 8);
         $this->createBoard();
 
+        // Setup Game
         $this->setTotalScores(8);
         $this->plantMines(15);
     }

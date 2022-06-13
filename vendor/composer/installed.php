@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '205095ef2fb419e60eacb21292eacd2436f5446b',
+        'reference' => 'dfff2f791c5488353894d8d932ca7ef35fb5d4c4',
         'name' => 'ramin/game',
         'dev' => true,
     ),
@@ -105,7 +105,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpunit/php-code-coverage',
             'aliases' => array(),
-            'reference' => '5b85faa0aedb9b1ee542d00932a3aac5d0b9f56c',
+            'reference' => '117043c3dc8afcae8e2cb9aeaba09fb03ad8e13b',
             'dev_requirement' => true,
         ),
         'phpunit/php-file-iterator' => array(
@@ -159,7 +159,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '205095ef2fb419e60eacb21292eacd2436f5446b',
+            'reference' => 'dfff2f791c5488353894d8d932ca7ef35fb5d4c4',
             'dev_requirement' => false,
         ),
         'sebastian/cli-parser' => array(
