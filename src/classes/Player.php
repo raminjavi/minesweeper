@@ -30,7 +30,7 @@ class Player
      * 
      * @param Game $game
      * @param Position $position
-     * @return int|Cell
+     * @return int|Mine
      * @throws LogicException if the cell was already marked as played
      */
     public function play(Game $game, Position $position): int|Mine
@@ -55,6 +55,7 @@ class Player
 
         // If Player found a mine, then give him a score
         if ($mine = $cell->getMine()) {
+            $mine->find($this);
             $game->addScoreToPlayer($this);
             return $mine;
         }

@@ -11,8 +11,8 @@ class Game
     private array $players;
     private int $totalMines;
     private int $scoresToWin;
-    private array $playedCellsHistory;
     private bool $isGameOver = false;
+    private array $playedCellsHistory = [];
 
 
     /**
@@ -202,7 +202,7 @@ class Game
                 $randomX = rand(0, $boardDimensions->x);
                 $cell = $boardCells[$randomY][$randomX];
                 if (!$cell->getMine()) {
-                    $mine = new Mine;
+                    $mine = new Mine($cell->getPosition());
                     $cell->setMine($mine);
                     $plantedMines++;
                 }
@@ -220,8 +220,7 @@ class Game
             'scoresToWin' => $this->scoresToWin,
             'players' => $this->players,
             'winner' => $this->winner,
-            'history' => $this->playedCellsHistory,
+            'playedCellsHistory' => $this->playedCellsHistory,
         ];
     }
-
 }

@@ -123,15 +123,6 @@ class Cell
 
 
     /**
-     * @return int $totalMinesAround
-     */
-    public function getTotalMinesAround(): int
-    {
-        return $this->totalMinesAround;
-    }
-
-
-    /**
      * @return Position
      */
     public function getPosition(): Position

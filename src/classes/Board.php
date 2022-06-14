@@ -120,17 +120,4 @@ class Board
         $this->y = intval($y - 1);
     }
 
-
-    // public function getMarkedCells(): array
-    // {
-    //     $markedCells = [];
-    //     foreach ($this->getBoard() as $cells) {
-    //         foreach ($cells as $cell) {
-    //             if ($cell->isMarked()) {
-    //                 $markedCells[] = $cell;
-    //             }
-    //         }
-    //     }
-    //     return $markedCells;
-    // }
 }
