@@ -8,14 +8,13 @@ class Position
 {
     private array $position;
 
-
     /**
      * Create a new Position instance.
      *
      * @param int $x
      * @param int $y
-     * @return array $position ['x' => $x, 'y' => $y]
-     * @throws InvalidArgumentException if $x or $y were not natural integers.
+     * @return void
+     * @throws InvalidArgumentException if $x or $y was not natural integer.
      */
     public function __construct(int $x, int $y)
     {
@@ -25,6 +24,10 @@ class Position
         $this->position = ['x' => $x, 'y' => $y];
     }
 
+
+    /**
+     * @return object
+     */
     public function get(): object
     {
         return (object)$this->position;

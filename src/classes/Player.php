@@ -6,11 +6,17 @@ namespace Game\classes;
 
 class Player
 {
-    private int $scores = 0;
     private string $fullName;
+    private int $totalScores = 0;
     private bool $isWinner = false;
 
 
+    /**
+     * Create a new Player instance.
+     * 
+     * @param string $fullName
+     * @return void
+     */
     public function __construct(string $fullName)
     {
         $this->fullName = $fullName;
@@ -18,10 +24,13 @@ class Player
 
 
     /**
-     * Calculate mines around the cell and mark the cell as played.
+     * Mark the cell as played,
+     * Add a score to the player if the cell has a Mine 
+     * otherwise return totalMines around the cell.
+     * 
      * @param Game $game
      * @param Position $position
-     * @return Cell
+     * @return int|Cell
      * @throws LogicException if the cell was already marked as played
      */
     public function play(Game $game, Position $position): int|Mine
@@ -41,6 +50,9 @@ class Player
         // Mark the cell
         $cell->mark($this);
 
+        // Add played cell to the game history
+        $game->addPlayedCellToHistory($cell);
+
         // If Player found a mine, then give him a score
         if ($mine = $cell->getMine()) {
             $game->addScoreToPlayer($this);
@@ -51,28 +63,48 @@ class Player
     }
 
 
+    /** 
+     * @param int $score
+     * @return int $totalScores
+     */
     public function addScore(int $scores): int
     {
-        return $this->scores = $this->scores + $scores;
+        return $this->totalScores = $this->totalScores + $scores;
     }
 
 
+    /** 
+     * @return int $totalScores
+     */
     public function getScores(): int
     {
-        return $this->scores;
+        return $this->totalScores;
     }
 
 
+    /** 
+     * @return string
+     */
     public function getFullName(): string
     {
         return $this->fullName;;
     }
 
+
+    /** 
+     * @return bool
+     */
     public function isWinner(): bool
     {
         return $this->isWinner;
     }
 
+
+    /** 
+     * Set isWinner property to true
+     * 
+     * @return void
+     */
     public function win(): void
     {
         $this->isWinner = true;

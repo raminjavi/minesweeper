@@ -6,12 +6,12 @@ namespace Game\classes;
 
 class Cell
 {
-    private Mine $mine;
     private Player $player;
     private Position $position;
+    private ?Mine $mine = null;
     private int $totalMinesAround = 0;
     private bool $isMarked = false;
-    public const CLOCKWISE_PATTERN = [
+    private const CLOCKWISE_PATTERN = [
         ['y', '-'],
         ['x', '+'],
         ['y', '+'],
@@ -23,11 +23,25 @@ class Cell
     ];
 
 
+
+    /**
+     * Create a new Cell instance.
+     * 
+     * @param Position $position
+     * @return void
+     */
     public function __construct(Position $position)
     {
         $this->position = $position;
     }
 
+
+    /**
+     * Mark the cell as played and save the Player in it.
+     * 
+     * @param Player $player
+     * @return Cell
+     */
     public function mark(Player $player): Cell
     {
         $this->isMarked = true;
@@ -35,25 +49,43 @@ class Cell
         return $this;
     }
 
+
+    /**
+     * @return bool
+     */
     public function isMarked(): bool
     {
         return $this->isMarked;
     }
 
+
+    /**
+     * @return Player|null
+     */
     public function getPlayer(): ?Player
     {
         return $this->player ?? null;
     }
 
+
+    /**
+     * @return Mine|null
+     */
     public function getMine(): ?Mine
     {
         return $this->mine ?? null;
     }
 
+
+    /**
+     * Calculate existing Mines around the cell and return the sum.
+     * 
+     * @param Board $board
+     * @return int $totalMinesAround
+     */
     public function getMinesAround(Board $board): int
     {
-        $cellPosition = $this->getPosition();
-        $pointerPosition = $cellPosition->get();
+        $scannerPosition = $this->position->get();
 
         // Scan around the cell (clockwise)
         foreach (self::CLOCKWISE_PATTERN as $item) {
@@ -62,44 +94,57 @@ class Cell
 
             if ($operator == '+') {
                 if ($axis == 'y') {
-                    $pointerPosition->y++;
+                    $scannerPosition->y++;
                 } else {
-                    $pointerPosition->x++;
+                    $scannerPosition->x++;
                 }
-            } else {
+            } elseif ($operator == '-') {
                 if ($axis == 'y') {
-                    $pointerPosition->y--;
+                    $scannerPosition->y--;
                 } else {
-                    $pointerPosition->x--;
+                    $scannerPosition->x--;
                 }
             }
 
             try {
-                $adjacentCellPosition = new Position($pointerPosition->x, $pointerPosition->y);
-                if ($adjacentCell = $board->getCell($adjacentCellPosition)) {
-                    if ($adjacentCell->getMine()) {
-                        $this->totalMinesAround++;
-                    }
+                $position = new Position($scannerPosition->x, $scannerPosition->y);
+                $adjacentCell = $board->getCell($position);
+
+                if ($adjacentCell->getMine()) {
+                    $this->totalMinesAround++;
                 }
             } catch (\Exception $e) {
+                continue;
             }
         }
 
         return $this->totalMinesAround;
     }
 
+
+    /**
+     * @return int $totalMinesAround
+     */
     public function getTotalMinesAround(): int
     {
         return $this->totalMinesAround;
     }
 
 
+    /**
+     * @return Position
+     */
     public function getPosition(): Position
     {
         return $this->position;
     }
 
 
+    /**
+     * Plant Mine in the Cell
+     * 
+     * @return Mine
+     */
     public function setMine(Mine $mine): Mine
     {
         return $this->mine = $mine;
